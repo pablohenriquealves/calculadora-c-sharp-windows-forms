@@ -19,35 +19,118 @@ namespace CalculadoraCompletaWindowsForms
 
         private void btnMultiplicar_Click(object sender, EventArgs e)
         {
-            operacaoSelecionada = Operacao.Multiplicacao;
-            Valor = Convert.ToDecimal(txtResultado.Text);
-            txtResultado.Text = "";
-            lblOperacao.Text = "*";
-
+            try
+            {
+                if (string.IsNullOrEmpty(txtResultado.Text))
+                {
+                    MessageBox.Show("Insira um valor antes de tentar multiplicar.");
+                    return;
+                }
+                if (decimal.TryParse(txtResultado.Text, out decimal valor))
+                {
+                    operacaoSelecionada = Operacao.Multiplicacao;
+                    Valor = valor;
+                    txtResultado.Text = "";
+                    lblOperacao.Text = "*";
+                }
+                else
+                {
+                    MessageBox.Show("Insira um valor numérico válido.");
+                }
+            }
+            catch (DivideByZeroException)
+            {
+                MessageBox.Show("Não é possível dividir por zero.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"O correu um erro {ex.Message}");
+            }  
         }
         private void btnDividir_Click(object sender, EventArgs e)
         {
-            operacaoSelecionada = Operacao.Divisao;
-            Valor = Convert.ToDecimal(txtResultado.Text);
-            txtResultado.Text = "";
-            lblOperacao.Text = "/";
+            try
+            {
+                if (string.IsNullOrEmpty(txtResultado.Text))
+                {
+                    MessageBox.Show("Insira um valor antes de tentar dividir.");
+                    return;
+                }
+                if (decimal.TryParse(txtResultado.Text, out decimal valor))
+                {
+                    operacaoSelecionada = Operacao.Divisao;
+                    Valor = valor;
+                    txtResultado.Text = "";
+                    lblOperacao.Text = "/";
+                }
+                else
+                {
+                    MessageBox.Show("Insira um valor numérico válido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"O correu um erro {ex.Message}");
+            }
         }
+        
 
         private void btnAdicao_Click(object sender, EventArgs e)
         {
-            operacaoSelecionada = Operacao.Adicao;
-            Valor = Convert.ToDecimal(txtResultado.Text);
-            txtResultado.Text = "";
-            lblOperacao.Text = "+";
+            try
+            {
+                if (string.IsNullOrEmpty(txtResultado.Text))
+                {
+                    MessageBox.Show("Insira um valor antes de tentar somar.");
+                    return;
+                }
+                if (decimal.TryParse(txtResultado.Text, out decimal valor))
+                {
+                    operacaoSelecionada = Operacao.Adicao;
+                    Valor = valor;
+                    txtResultado.Text = "";
+                    lblOperacao.Text = "+";
+                }
+                else
+                {
+                    MessageBox.Show("Insira um valor numérico válido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"O correu um erro {ex.Message}");
+            }
         }
+        
 
         private void btnSubtracao_Click(object sender, EventArgs e)
         {
-            operacaoSelecionada = Operacao.Subtracao;
-            Valor = Convert.ToDecimal(txtResultado.Text);
-            txtResultado.Text = "";
-            lblOperacao.Text = "-";
+            try
+            {
+                if (string.IsNullOrEmpty(txtResultado.Text))
+                {
+                    MessageBox.Show("Insira um valor antes de tentar subtrair.");
+                    return;
+                }
+                if (decimal.TryParse(txtResultado.Text, out decimal valor))
+                {
+                    operacaoSelecionada = Operacao.Subtracao;
+                    Valor = valor;
+                    txtResultado.Text = "";
+                    lblOperacao.Text = "-";
+                }
+                else
+                {
+                    MessageBox.Show("Insira um valor numérico válido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"O correu um erro {ex.Message}");
+            }
         }
+        
+    
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
@@ -141,32 +224,38 @@ namespace CalculadoraCompletaWindowsForms
         {
             try
             {
-                decimal novoValor = Convert.ToDecimal(txtResultado.Text);
-                switch (operacaoSelecionada)
+                if (decimal.TryParse((txtResultado.Text), out decimal valor))
                 {
-                    case Operacao.Adicao:
-                        Resultado = _calculadora.Somar(Valor, novoValor);
-                        break;
-                    case Operacao.Subtracao:
-                        Resultado = _calculadora.Subtrair(Valor, novoValor);
-                        break;
-                    case Operacao.Multiplicacao:
-                        Resultado = _calculadora.Multiplicar(Valor, novoValor);
-                        break;
-                    case Operacao.Divisao:
-                        Resultado = _calculadora.Dividir(Valor, novoValor);
-                        break;
+
+                    decimal novoValor = valor;
+                    switch (operacaoSelecionada)
+                    {
+                        case Operacao.Adicao:
+                            Resultado = _calculadora.Somar(Valor, novoValor);
+                            break;
+                        case Operacao.Subtracao:
+                            Resultado = _calculadora.Subtrair(Valor, novoValor);
+                            break;
+                        case Operacao.Multiplicacao:
+                            Resultado = _calculadora.Multiplicar(Valor, novoValor);
+                            break;
+                        case Operacao.Divisao:
+                            Resultado = _calculadora.Dividir(Valor, novoValor);
+                            break;
+
+                        default:
+                            return;
+                    }
+                    txtResultado.Text = Convert.ToString(Resultado);
+                    lblOperacao.Text = "=";
                 }
-                txtResultado.Text = Convert.ToString(Resultado);
+
             }
             catch (DivideByZeroException)
             {
                 MessageBox.Show("Não é possível dividir por zero.");
                 txtResultado.Text = "";
             }
-            lblOperacao.Text = "=";
-
-
         }
 
         private void lblOperacao_Click(object sender, EventArgs e)
